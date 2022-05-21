@@ -4,6 +4,8 @@
  */
 package src;
 
+import java.io.PrintWriter;
+
 /**
  *
  * @author jadid
@@ -98,7 +100,22 @@ public class HomeAfterLogIn extends javax.swing.JFrame {
     }
 
     private void hartRateSeeBtnActionPerformed(java.awt.event.ActionEvent evt) {
-
+        String[] command =
+                {
+                        "cmd",
+                };
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            new Thread(new SyncPipe(p.getErrorStream(), System.err)).start();
+            new Thread(new SyncPipe(p.getInputStream(), System.out)).start();
+            PrintWriter stdin = new PrintWriter(p.getOutputStream());
+            stdin.println("python /home/jadid/All/study/academic/spring 2022/os lab/after mid/src/src/prediction.py");
+            stdin.close();
+            p.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
